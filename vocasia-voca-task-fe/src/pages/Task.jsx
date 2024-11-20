@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckIcon, XIcon, PlusIcon, ClipboardListIcon, PencilIcon, LogoutIcon } from '@heroicons/react/solid';
 import { fetchUserProfile } from '../api/userApi'; 
-import { createTask, fetchTasks, updateTaskAsDone } from '../api/taskApi';
+import { createTask, fetchTasks, updateTaskAsDone, deleteTaskApi } from '../api/taskApi';
 
 function Task() {
   const [profile, setProfile] = useState(null); 
@@ -111,10 +111,17 @@ function Task() {
     }
   };
   
-  
-
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const handleDeleteTask = async (id) => {
+    const token = localStorage.getItem('token');
+    try {
+      const deletedTask = await deleteTaskApi(token, id); 
+      if (deletedTask) {
+        setTasks(tasks.filter((task) => task.id !== id)); 
+        console.log('Task deleted successfully');
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
   return (
@@ -188,7 +195,7 @@ function Task() {
                     <CheckIcon className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={() => deleteTask(task.id)}
+                    onClick={() => handleDeleteTask(task.id)}
                     className="text-red-400 hover:text-red-500"
                   >
                     <XIcon className="w-5 h-5" />

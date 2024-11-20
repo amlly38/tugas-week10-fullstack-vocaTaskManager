@@ -66,3 +66,28 @@ export async function updateTaskAsDone(token, taskId) {
       throw error;
     }
   }
+
+  export async function deleteTaskApi(token, taskId) {
+    const url = `http://localhost:8080/api/tasks/${taskId}`; 
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Task deleted:', data); 
+        return data;
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        throw error; 
+    }
+}
