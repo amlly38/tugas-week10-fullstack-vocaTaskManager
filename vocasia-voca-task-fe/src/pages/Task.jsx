@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckIcon, XIcon, PlusIcon, ClipboardListIcon, PencilIcon, LogoutIcon } from '@heroicons/react/solid';
 import { fetchUserProfile } from '../api/userApi'; 
-import { createTask } from '../api/taskApi';
+import { createTask, fetchTasks } from '../api/taskApi';
 
 function Task() {
   const [profile, setProfile] = useState(null); 
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
 
+  // Fetch profile data
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem('token'); 
@@ -31,16 +32,52 @@ function Task() {
     fetchProfile();
   }, []);
 
+  // Fetch all tasks
+  useEffect(() => {
+    const fetchAllTasks = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const data = await fetchTasks(token);
+          console.log("Tasks fetched from API:", data);
+          if (data && data.data) {
+            setTasks(
+              data.data.map(task => ({
+                id: task.id || task._id,
+                description: task.title || task.description || "No Title",
+                done: task.done || false,
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+        }
+      }
+    };
+  
+    fetchAllTasks();
+  }, []);
+  
+
   const handleAddTask = async () => {
     if (newTask.trim()) {
       const token = localStorage.getItem('token');
       const taskData = { title: newTask };
-
+  
       try {
         const createdTask = await createTask(token, taskData);
         if (createdTask) {
-          setTasks([...tasks, { id: createdTask.id, description: createdTask.title, done: false }]);
+          setTasks(prevTasks => [
+            ...prevTasks,
+            {
+              id: createdTask.data.id || createdTask.data._id, 
+              description: createdTask.data.title,
+              done: false,
+            },
+          ]);
+
           setNewTask('');
+
         }
       } catch (error) {
         console.error("Error creating task:", error);
@@ -110,7 +147,7 @@ function Task() {
               <PlusIcon className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div>
             <h3 className="text-white text-lg font-semibold flex items-center">
               <ClipboardListIcon className="w-5 h-5 mr-2" />

@@ -22,4 +22,28 @@ export async function createTask(token, taskData) {
     } catch (error) {
       console.error('Error creating task:', error);
     }
-  }
+}
+
+export async function fetchTasks(token) {
+    const url = 'http://localhost:8080/api/tasks';
+  
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': '*/*',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Tasks fetched successfully:', data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+}
