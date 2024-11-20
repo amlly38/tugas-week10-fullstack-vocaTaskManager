@@ -1,20 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckIcon, XIcon, PlusIcon, ClipboardListIcon, PencilIcon, LogoutIcon } from '@heroicons/react/solid';
+import { fetchUserProfile } from '../api/userApi'; 
 
 function Task() {
-  const name = 'Amaliyah';
-  const profileUrl = '../../public/profile.jpg';
-  const listTasks = [
+  const [profile, setProfile] = useState(null); 
+  const [tasks, setTasks] = useState([
     { id: 1, description: 'To study React fundamentals', done: false },
     { id: 2, description: 'Write documentation for API endpoints', done: false },
     { id: 3, description: 'Prepare a presentation on project status', done: false },
     { id: 4, description: 'Fix bugs in the authentication module', done: false },
     { id: 5, description: 'Vocasia Fullstack Web Developer', done: false },
-  ];
-
-  const [tasks, setTasks] = useState(listTasks);
+  ]);
   const [newTask, setNewTask] = useState('');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('token'); 
+      if (token) {
+        try {
+          const data = await fetchUserProfile(token);
+          if (data) {
+            setProfile({
+              name: data.data.name,
+              profileUrl: data.data.photo_url,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+          setProfile(null);
+        }
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleAddTask = () => {
     if (newTask.trim()) {
@@ -37,14 +57,21 @@ function Task() {
       <div className="flex w-full max-w-4xl space-x-8">
         {/* Profile Section */}
         <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-1/3 h-full min-h-[450px] flex flex-col items-center justify-center space-y-6">
-          <img
-            className="w-32 h-32 rounded-full border-4 border-purple-400 shadow-xl mb-4"
-            src={profileUrl}
-            alt="Profile"
-          />
-          <h2 className="text-2xl text-white font-semibold text-center">
-            Welcome Back, <span className="text-purple-400">{name}</span>
-          </h2>
+          {profile ? (
+            <>
+              <img
+                className="w-32 h-32 rounded-full border-4 border-purple-400 shadow-xl mb-4"
+                src={profile.profileUrl}
+                alt="Profile"
+              />
+              <h2 className="text-2xl text-white font-semibold text-center">
+                Welcome Back,
+                <span className="block text-purple-400">{profile.name}</span>
+              </h2>
+            </>
+          ) : (
+            <h2 className="text-2xl text-white font-semibold text-center">Loading Profile...</h2>
+          )}
 
           {/* Centered Buttons */}
           <div className="flex flex-col items-center space-y-3 w-full mt-6">
