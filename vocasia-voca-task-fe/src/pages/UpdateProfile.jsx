@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/solid';
-import { fetchUserProfile } from '../api/userApi';
+import { fetchUserProfile, updateUserProfile } from '../api/userApi';
 
 const UpdateProfile = () => {
   const [profile, setProfile] = useState(null);
+  const [formValues, setFormValues] = useState({
+    photo_url: '',
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -13,15 +21,17 @@ const UpdateProfile = () => {
         try {
           const data = await fetchUserProfile(token);
           if (data) {
-            setProfile({
-              name: data.data.name,
+            const userProfile = {
               photo_url: data.data.photo_url,
+              name: data.data.name,
               email: data.data.email,
-              password: data.data.password,
-            });
+              password: '',
+            };
+            setProfile(userProfile);
+            setFormValues(userProfile);
           }
         } catch (error) {
-          console.error("Error fetching profile:", error);
+          console.error('Error fetching profile:', error);
           setProfile(null);
         }
       }
@@ -29,6 +39,31 @@ const UpdateProfile = () => {
 
     fetchProfile();
   }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setErrorMessage('User not authenticated');
+      return;
+    }
+
+    try {
+      const updatedProfile = await updateUserProfile(token, formValues);
+      if (updatedProfile) {
+        console.log('Profile successfully updated');
+        navigate('/task');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setErrorMessage('Failed to update profile');
+    }
+  };
 
   if (!profile) {
     return (
@@ -49,7 +84,7 @@ const UpdateProfile = () => {
           <ArrowLeftIcon className="w-5 h-5 mr-2" />
           <span>Edit Profile</span>
         </Link>
-
+        
         {/* Profile Picture */}
         <div className="flex flex-col items-center">
           <img
@@ -60,18 +95,19 @@ const UpdateProfile = () => {
         </div>
 
         {/* Update Profile Form */}
-        <form className="space-y-4 w-full">
+        <form className="space-y-4 w-full" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="profile" className="block mb-1 text-sm font-medium text-gray-300">
+            <label htmlFor="photo_url" className="block mb-1 text-sm font-medium text-gray-300">
               Profile URL
             </label>
             <input
               type="text"
-              name="profile"
-              id="profile"
+              name="photo_url"
+              id="photo_url"
               className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="Enter Profile URL"
-              defaultValue={profile.photo_url}
+              value={formValues.photo_url}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -86,7 +122,8 @@ const UpdateProfile = () => {
               id="name"
               className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="Enter your name"
-              defaultValue={profile.name}
+              value={formValues.name}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -101,7 +138,8 @@ const UpdateProfile = () => {
               id="email"
               className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="Enter email"
-              defaultValue={profile.email}
+              value={formValues.email}
+              onChange={handleInputChange}
               required
             />
           </div>
@@ -116,17 +154,22 @@ const UpdateProfile = () => {
               id="password"
               className="bg-gray-700 border border-gray-600 text-gray-200 text-sm rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
               placeholder="Enter new password"
-              required
+              value={formValues.password}
+              onChange={handleInputChange}
             />
           </div>
 
+          {/* Error Message */}
+          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+
           {/* Submit Button */}
-          <Link to="/task">
-            <button className="w-full flex justify-center items-center bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
-              <CheckIcon className="w-5 h-5 mr-2" />
-              <span>Submit</span>
-            </button>
-          </Link>
+          <button
+            type="submit"
+            className="w-full flex justify-center items-center bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300"
+          >
+            <CheckIcon className="w-5 h-5 mr-2" />
+            <span>Submit</span>
+          </button>
         </form>
       </div>
     </div>
