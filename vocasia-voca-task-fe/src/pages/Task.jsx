@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckIcon, XIcon, PlusIcon, ClipboardListIcon, PencilIcon, LogoutIcon } from '@heroicons/react/solid';
 import { fetchUserProfile } from '../api/userApi'; 
-import { createTask, fetchTasks } from '../api/taskApi';
+import { createTask, fetchTasks, updateTaskAsDone } from '../api/taskApi';
 
 function Task() {
   const [profile, setProfile] = useState(null); 
@@ -45,7 +45,7 @@ function Task() {
               data.data.map(task => ({
                 id: task.id || task._id,
                 description: task.title || task.description || "No Title",
-                done: task.done || false,
+                done: task.isDone || false,
               }))
             );
           }
@@ -85,9 +85,33 @@ function Task() {
     }
   };
 
-  const toggleTaskStatus = (id) => {
-    setTasks(tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
+  const toggleTaskStatus = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error("Token not found");
+      return;
+    }
+  
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, done: true } : task
+      )
+    );
+  
+    try {
+      await updateTaskAsDone(token, id);
+    } catch (error) {
+      console.error("Error toggling task status:", error);
+  
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === id ? { ...task, done: false } : task
+        )
+      );
+    }
   };
+  
+  
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));

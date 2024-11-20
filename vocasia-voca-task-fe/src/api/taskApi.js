@@ -47,3 +47,22 @@ export async function fetchTasks(token) {
       console.error('Error fetching tasks:', error);
     }
 }
+
+export async function updateTaskAsDone(token, taskId) {
+    try {
+      const url = `http://localhost:8080/api/tasks/${taskId}/done`;
+      const response = await fetch( url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to mark task as done");
+      }
+    } catch (error) {
+      console.error("Error marking task as done:", error);
+      throw error;
+    }
+  }
