@@ -8,6 +8,43 @@ const generateToken = (id) => {
 };
 
 const userController = {
+    async register(req, res) {
+        try {
+            const { name, email, password } = req.body; // photo_url dihapus dari input
+
+            // Cek apakah email sudah digunakan
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return ResponseAPI.error(res, 'Email already in use', 400);
+            }
+
+            // Buat user baru tanpa photo_url
+            const newUser = new User({
+                name,
+                email,
+                password, // Password akan di-hash otomatis oleh middleware di model
+                photo_url: '' // Default photo_url kosong
+            });
+
+            await newUser.save();
+
+            // Buat token JWT
+            const token = generateToken(newUser._id);
+
+            ResponseAPI.success(res, {
+                token,
+                user: {
+                    id: newUser._id,
+                    name: newUser.name,
+                    email: newUser.email,
+                    photo_url: newUser.photo_url // Akan tetap kosong saat pertama kali register
+                }
+            });
+        } catch (error) {
+            ResponseAPI.serverError(res, error);
+        }
+    },
+
     async login(req, res) {
         try {
             const { email, password } = req.body;
@@ -30,7 +67,7 @@ const userController = {
                     id: user._id,
                     name: user.name,
                     email: user.email,
-                    photo_url: user.photo_url
+                    photo_url: user.photo_url // Akan kosong jika belum diupdate
                 }
             });
         } catch (error) {
@@ -51,27 +88,25 @@ const userController = {
         try {
             const { name, email, photo_url, password } = req.body;
 
-            const user = await User.findById(
-                req.user._id
-            ).select('-password');
+            const user = await User.findById(req.user._id).select('-password');
 
-            if (req.body.password) {
+            if (password) {
                 user.password = password;
             }
 
-            if(name) {
-                user.name = name
+            if (name) {
+                user.name = name;
             }
 
-            if(email) {
-                user.email = email
+            if (email) {
+                user.email = email;
             }
 
-            if(photo_url) {
-                user.photo_url = photo_url
-            } 
+            if (photo_url) {
+                user.photo_url = photo_url; // User bisa menambahkan photo_url setelah login
+            }
 
-            await user.save()
+            await user.save();
 
             ResponseAPI.success(res, user);
         } catch (error) {

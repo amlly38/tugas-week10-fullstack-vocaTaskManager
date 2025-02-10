@@ -1,3 +1,5 @@
+const ResponseAPI = require('../utils/response'); // Import ResponseAPI
+
 const errorHandler = (err, req, res, next) => {
     console.error(err);
 
@@ -12,4 +14,4 @@ const errorHandler = (err, req, res, next) => {
     return ResponseAPI.serverError(res, err);
 };
 
-module.exports = errorHandler
+module.exports = errorHandler;
