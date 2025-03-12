@@ -125,11 +125,11 @@ function Task() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 to-blue-500">
-      <div className="flex w-full max-w-4xl space-x-8">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 to-blue-500 p-4">
+      <div className="flex flex-col lg:flex-row w-full max-w-4xl space-y-8 lg:space-y-0 lg:space-x-8">
 
          {/* Profile Section */}
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-1/3 h-full min-h-[450px] flex flex-col items-center justify-center space-y-6">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full lg:w-1/3 h-full min-h-[450px] flex flex-col items-center justify-center space-y-6">
           {profile ? (
             <>
               <img
@@ -162,7 +162,7 @@ function Task() {
         </div>
 
         {/* Task List Section */}
-        <div className="bg-gray-700 p-6 rounded-lg shadow-md w-2/3 space-y-8">
+        <div className="bg-gray-700 p-6 rounded-lg shadow-md w-full lg:w-2/3 space-y-8">
           <div className="flex items-center space-x-4">
             <input
               type="text"

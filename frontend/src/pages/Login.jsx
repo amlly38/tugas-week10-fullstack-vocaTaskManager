@@ -3,21 +3,25 @@ import { useNavigate, Link } from 'react-router-dom';
 import { EyeIcon, EyeOffIcon, ArrowLeftIcon } from '@heroicons/react/solid';
 import { BriefcaseIcon } from '@heroicons/react/outline';
 import { loginUser } from '../api/userApi';
+import Modal from "../components/Modal";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
       const data = await loginUser(email, password);
-      localStorage.setItem('token', data.data.token);
-      navigate('/task');
+      localStorage.setItem("token", data.data.token);
+      navigate("/task");
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Invalid email or password');
+      console.error("Error logging in:", error);
+      setErrorMessage("Invalid email or password. Please try again.");
+      setIsModalOpen(true);
     }
   };
 
@@ -95,6 +99,14 @@ function Login() {
           </Link>
         </div>
       </div>
+
+      {/* Modal Error */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Login Failed"
+        message={errorMessage}
+      />
     </div>
   );
 }

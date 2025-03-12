@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { EyeIcon, EyeOffIcon, ArrowLeftIcon } from '@heroicons/react/solid';
-import { registerUser } from '../api/userApi';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { EyeIcon, EyeOffIcon, ArrowLeftIcon } from "@heroicons/react/solid";
+import { registerUser } from "../api/userApi";
+import Modal from "../components/Modal"; // Import Modal
 
 function Register() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
       const data = await registerUser(name, email, password);
       if (data) {
-        alert('Registration successful! Please log in.');
-        navigate('/login');
+        setModalTitle("Registration Successful");
+        setModalMessage("You have successfully registered! Please log in.");
+        setIsModalOpen(true);
       }
     } catch (error) {
-      console.error('Registration failed:', error);
-      alert('Registration failed. Please try again.');
+      console.error("Registration failed:", error);
+      setModalTitle("Registration Failed");
+      setModalMessage("Something went wrong. Please try again.");
+      setIsModalOpen(true);
     }
   };
 
@@ -63,7 +70,7 @@ function Register() {
           <label className="block text-gray-400 text-left">Password</label>
           <div className="relative">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               className="w-full mt-1 px-4 py-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all"
               value={password}
@@ -88,12 +95,25 @@ function Register() {
         </button>
 
         <div className="mt-4 text-gray-400">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/login" className="text-purple-400 hover:underline font-semibold">
             Sign In
           </Link>
         </div>
       </div>
+
+      {/* Modal Error/Sukses */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          if (modalTitle === "Registration Successful") {
+            navigate("/login");
+          }
+        }}
+        title={modalTitle}
+        message={modalMessage}
+      />
     </div>
   );
 }
