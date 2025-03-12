@@ -28,7 +28,7 @@ const handleSubmit = async ()  => {
       <div className="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-md text-center transform transition-all duration-300 ease-in-out hover:scale-105">
         <h1 className="text-3xl font-bold text-white mb-4 flex items-center justify-center">
           <BriefcaseIcon className="h-8 w-8 text-purple-400 mr-2" /> 
-          VOCA
+          DailiDo
         </h1>
         <p className="text-lg text-gray-300 mb-6">Task Management</p>
 
@@ -75,9 +75,9 @@ const handleSubmit = async ()  => {
             />
               Remember me
           </label>
-            <a href="#" className="text-purple-400 hover:underline text-sm">
+          <Link to="/forgot-password" className="text-purple-400 hover:underline text-sm">
             Forgot Password?
-            </a>
+          </Link>
         </div>
 
         <button

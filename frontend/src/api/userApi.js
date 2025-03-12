@@ -44,6 +44,32 @@ export async function loginUser(email, password) {
     }
 }
 
+export async function forgotPassword(email) {
+  const url = 'http://localhost:8080/api/users/forgot-password';
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Pastikan respons berbentuk JSON
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error requesting password reset:', error);
+    return { message: 'Failed to send reset email. Please try again.' }; // Fallback agar tidak error di frontend
+  }
+}
+
+
 export async function fetchUserProfile(token) {
   const url = 'http://localhost:8080/api/users/profile';
 

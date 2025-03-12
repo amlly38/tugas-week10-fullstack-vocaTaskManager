@@ -1,4 +1,4 @@
-# VOCA Task
+# DailiDo
 
 **PENTING**: Tugas ini akan dilanjutkan hingga Part 3 atau 4. Karena itu, diharapkan untuk memaksimalkan tugas dengan menyelesaikan dengan baik
 

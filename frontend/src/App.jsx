@@ -5,6 +5,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Task from './pages/Task.jsx';
 import UpdateProfile from './pages/UpdateProfile.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/task" element={<Task />} />
           <Route path="/updateprofile" element={<UpdateProfile />} />
         </Routes>

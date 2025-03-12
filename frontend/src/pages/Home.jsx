@@ -8,7 +8,7 @@ function Home() {
       <div className="bg-gray-800 p-10 rounded-xl shadow-xl w-full max-w-lg text-center transform transition-all duration-300 ease-in-out hover:scale-105">
         <h1 className="text-4xl font-bold text-white mb-4 flex items-center justify-center">
           <BriefcaseIcon className="h-10 w-10 text-purple-400 mr-2" />
-          VOCA
+          DailiDo
         </h1>
         <p className="text-lg text-gray-300 mb-6">Task Management Made Easy</p>
 
