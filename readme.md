@@ -1,4 +1,4 @@
-# Vocatask Task Management API 📝
+# DailiDo Task Management 📝
 
 API untuk manajemen task sederhana dengan fitur autentikasi. Dibuat pakai Express.js, MongoDB, dan Swagger docs.
 
