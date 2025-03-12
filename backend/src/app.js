@@ -7,14 +7,15 @@ const { port } = require('./config/env');
 const errorHandler = require('./middleware/errorHandler');
 const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes');
-const morgan = require('morgan')
-
+const authRoutes = require('./routes/authRoutes'); 
+const morgan = require('morgan');
+require('dotenv').config();
 
 const app = express();
 
 connectDB();
 
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 
 app.use(cors());
 app.use(express.json());
@@ -23,7 +24,7 @@ const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Vocatask Task Management API',
+            title: 'DailiDo Task Management API',
             version: '1.0.0',
             description: 'API documentation for Task Management System'
         },
@@ -51,9 +52,9 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use(errorHandler);
-
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

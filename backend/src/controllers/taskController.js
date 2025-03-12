@@ -46,7 +46,7 @@ const taskController = {
 
     async deleteTask(req, res) {
         try {
-            const task = await Task.findOneAndDelete({
+            const task = await Task.findOneAndDelete({ 
                 _id: req.params.id,
                 userId: req.user._id
             });
