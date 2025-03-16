@@ -22,7 +22,7 @@ const UpdateProfile = () => {
           const data = await fetchUserProfile(token);
           if (data) {
             const userProfile = {
-              photo_url: data.data.photo_url,
+              photo_url: data.data.photo_url || 'https://fakeimg.pl/500x500/e9d8ed/8f8888?text=profile&font=bebas', // Default placeholder image
               name: data.data.name,
               email: data.data.email,
               password: '',
@@ -74,8 +74,8 @@ const UpdateProfile = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 to-blue-500">
-      <div className="bg-gray-800 w-full max-w-lg p-10 rounded-2xl shadow-lg flex flex-col items-center space-y-6">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 to-blue-500 p-4">
+      <div className="bg-gray-800 w-full max-w-lg p-6 md:p-10 rounded-2xl shadow-lg flex flex-col items-center space-y-6">
         {/* Back Link */}
         <Link
           to="/task"
@@ -89,7 +89,7 @@ const UpdateProfile = () => {
         <div className="flex flex-col items-center">
           <img
             className="w-32 h-32 rounded-full border-4 border-purple-300 mb-4"
-            src={profile.photo_url}
+            src={formValues.photo_url || 'https://fakeimg.pl/500x500/e9d8ed/8f8888?text=profile&font=bebas'}
             alt="Profile"
           />
         </div>
