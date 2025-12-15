@@ -142,6 +142,3 @@ Silakan buka issue baru di repository ini. Tapi sebelumnya, cek dulu:
 1. Issue yang sama udah ada belum?
 2. Bug masih ada ga di versi terbaru?
 3. Jelasin detail bug/saran sedetail mungkin ya!
-
----
-Made by indrafrds with ☕ dan 💖
